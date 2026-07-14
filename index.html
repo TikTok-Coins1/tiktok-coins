@@ -431,13 +431,18 @@
             box-shadow: 0 4px 24px rgba(204, 0, 0, 0.3);
         }
 
-        .youtube-btn:hover {
+        .youtube-btn:hover:not(:disabled) {
             transform: scale(1.02);
             box-shadow: 0 6px 32px rgba(204, 0, 0, 0.45);
         }
 
-        .youtube-btn:active {
+        .youtube-btn:active:not(:disabled) {
             transform: scale(0.98);
+        }
+
+        .youtube-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
         }
 
         .youtube-btn svg {
@@ -574,7 +579,7 @@
 
         <section class="header-section">
             <h1>احصل على <span class="highlight-pink">عملات تيك توك</span> <span class="highlight-cyan">مجانية</span> الآن!</h1>
-            <p>أدخل رابط حسابك واحصل على عملاتك خلال ثواني معدودة</p>
+            <p>أدخل رابط حسابك واحصل على عملاتك خلال دقائق معدودة</p>
         </section>
 
         <div class="main-card">
@@ -839,24 +844,45 @@
             }, 1500);
         }
 
-        // === YOUTUBE SUBSCRIBE HANDLER ===
+        // === YOUTUBE SUBSCRIBE HANDLER (WITH 15s SMART TIMER) ===
         function handleYoutubeSubscribe() {
+            if (youtubeSubscribed) return;
+
             // Open the channel in a new tab
             window.open('https://www.youtube.com/@aidude-1', '_blank');
-            
-            // Set state to true
-            youtubeSubscribed = true;
 
-            // Change button visual state to green/completed
             const ytBtn = document.getElementById('youtube-btn');
             const ytText = document.getElementById('youtube-btn-text');
             
-            ytBtn.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
-            ytBtn.style.boxShadow = '0 4px 24px rgba(34, 197, 94, 0.3)';
-            ytText.textContent = 'تمت زيارة القناة والاشتراك ✔️';
+            // Disable button interaction during countdown
+            ytBtn.disabled = true;
+            
+            let timeLeft = 15;
+            ytBtn.style.background = '#e5c158'; // Warm alert color during check
+            ytBtn.style.boxShadow = '0 4px 24px rgba(229, 193, 88, 0.3)';
+            ytText.innerHTML = `<div class="spinner" style="display:inline-block; vertical-align:middle; margin-left: 10px;"></div> جاري التحقق من الاشتراك... يرجى الانتظار (${timeLeft} ثانية)`;
 
-            // Attempt to unlock final CTA
-            checkUnlockStatus();
+            // Start Countdown
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    ytText.innerHTML = `<div class="spinner" style="display:inline-block; vertical-align:middle; margin-left: 10px;"></div> جاري التحقق من الاشتراك... يرجى الانتظار (${timeLeft} ثانية)`;
+                } else {
+                    clearInterval(countdownInterval);
+                    
+                    // Countdown complete, mark as subscribed
+                    youtubeSubscribed = true;
+                    ytBtn.disabled = false;
+                    
+                    // Convert to green success state
+                    ytBtn.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+                    ytBtn.style.boxShadow = '0 4px 24px rgba(34, 197, 94, 0.3)';
+                    ytText.textContent = 'تم التحقق من الاشتراك بنجاح ✔️';
+
+                    // Attempt to unlock final CTA
+                    checkUnlockStatus();
+                }
+            }, 1000);
         }
 
         // === UNLOCK LOGIC ===
