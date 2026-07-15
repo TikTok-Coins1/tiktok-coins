@@ -100,7 +100,7 @@
             color: #aaaaaa !important;
             box-shadow: none !important;
             animation: none !important;
-            pointer-events: none; /* لمنع تكرار الضغط */
+            pointer-events: none;
         }
     </style>
 </head>
@@ -118,17 +118,17 @@
     </div>
 
     <script>
-        // تم وضع رابط قناتك بنجاح مع كود زيادة المشتركين
+        // هنا تم وضع رابط قناتك الفعلي والتأكد منه
         const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@aidude-1?sub_confirmation=1";
 
         const subBtn = document.getElementById('subBtn');
         const btnText = document.getElementById('btnText');
 
         subBtn.addEventListener('click', () => {
-            // فتح رابط القناة في نافذة جديدة
+            // فتح رابط القناة الفعلي في نافذة جديدة
             window.open(YOUTUBE_CHANNEL_URL, '_blank');
 
-            // تغيير حالة الزر تفاعلياً بشكل رائع
+            // تغيير حالة الزر لـ "تم الاشتراك"
             btnText.textContent = "تم الاشتراك ✓";
             subBtn.classList.add('subscribed');
         });
